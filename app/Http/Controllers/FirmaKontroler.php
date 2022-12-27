@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Firma;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FirmaKontroler extends Controller
 {
@@ -14,7 +15,12 @@ class FirmaKontroler extends Controller
      */
     public function index()
     {
-        //
+        $firme = DB::table('firmas')->get();
+
+
+        return response()->json([
+            'Firme' => $firme
+        ]);
     }
 
     /**
@@ -80,6 +86,11 @@ class FirmaKontroler extends Controller
      */
     public function destroy(Firma $firma)
     {
-        //
+        DB::table('firmas')->where('id', $firma->id)->delete();
+
+
+        return response()->json([
+            'Poruka' => 'Firma je obrisana!'
+        ]);
     }
 }

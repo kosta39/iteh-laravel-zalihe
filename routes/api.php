@@ -16,8 +16,9 @@ use App\Http\Controllers\ProizvodKontroler;
 |
 */
 
-Route::resource('firma', FirmaKontroler::class);
-Route::resource('proizvod', ProizvodKontroler::class);
+Route::resource('firma', FirmaKontroler::class)->only('index', 'destroy');
+Route::resource('proizvod', ProizvodKontroler::class)->only('index', 'destroy', 'show', 'update');
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

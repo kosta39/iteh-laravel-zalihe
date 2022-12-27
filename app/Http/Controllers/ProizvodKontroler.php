@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Proizvod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProizvodKontroler extends Controller
 {
@@ -14,7 +17,12 @@ class ProizvodKontroler extends Controller
      */
     public function index()
     {
-        //
+        $proizvodi = DB::table('proizvods')->get();
+
+
+        return response()->json([
+            'Proizvodi' => $proizvodi
+        ]);
     }
 
     /**
@@ -46,7 +54,12 @@ class ProizvodKontroler extends Controller
      */
     public function show(Proizvod $proizvod)
     {
-        //
+        $p = DB::table('proizvods')->where('id', $proizvod->id)->first();
+
+
+        return response()->json([
+            'Proizvod' => $p
+        ]);
     }
 
     /**
@@ -69,8 +82,36 @@ class ProizvodKontroler extends Controller
      */
     public function update(Request $request, Proizvod $proizvod)
     {
-        //
+
+        $validator = Validator::make($request->all(), [
+            'sifra' => 'required|string',
+            'ime' => 'required|string',
+            'cena' => 'required',
+            'firma_id' => 'required|integer',
+        ]);
+
+
+
+        if ($validator->fails()) {
+
+            return response()->json([
+                'Poruka' => $validator->errors()
+            ]);
+        }
+
+
+        $proizvod->sifra = $request->sifra;
+        $proizvod->ime = $request->ime;
+        $proizvod->cena = $request->cena;
+        $proizvod->firma_id = $request->firma_id;
+        $proizvod->save();
+
+
+        return response()->json([
+            'Poruka' => 'Proizvod je azuriran!'
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -80,6 +121,11 @@ class ProizvodKontroler extends Controller
      */
     public function destroy(Proizvod $proizvod)
     {
-        //
+        DB::table('proizvods')->where('id', $proizvod->id)->delete();
+
+
+        return response()->json([
+            'Poruka' => 'Proizvod je obrisan!'
+        ]);
     }
 }
