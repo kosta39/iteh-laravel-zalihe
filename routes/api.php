@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AFKontroler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirmaKontroler;
@@ -16,10 +17,13 @@ use App\Http\Controllers\ProizvodKontroler;
 |
 */
 
-Route::resource('firma', FirmaKontroler::class)->only('index', 'destroy');
-Route::resource('proizvod', ProizvodKontroler::class)->only('index', 'destroy', 'show', 'update');
+Route::post('registracija', [AFKontroler::class, 'register']);
+Route::post('login', [AFKontroler::class, 'login']);
+Route::resource('firma', FirmaKontroler::class)->only('index');
+Route::resource('proizvod', ProizvodKontroler::class)->only('index', 'show');
 
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('logout', [AFKontroler::class, 'logout']);
+    Route::resource('firma', FirmaKontroler::class)->only('destroy');
+    Route::resource('proizvod', ProizvodKontroler::class)->only('destroy', 'update');
 });
